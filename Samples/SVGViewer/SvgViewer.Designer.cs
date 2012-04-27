@@ -33,6 +33,7 @@
             this.open = new System.Windows.Forms.ToolStripButton();
             this.imageBox = new System.Windows.Forms.PictureBox();
             this.openSvgFile = new System.Windows.Forms.OpenFileDialog();
+            this.SaveButton = new System.Windows.Forms.ToolStripButton();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox)).BeginInit();
             this.SuspendLayout();
@@ -40,7 +41,8 @@
             // toolStrip1
             // 
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.open});
+            this.open,
+            this.SaveButton});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(703, 27);
@@ -71,6 +73,15 @@
             // 
             this.openSvgFile.Filter = "Vector Graphics (*.svg)|*.svg";
             // 
+            // SaveButton
+            // 
+            this.SaveButton.Image = ((System.Drawing.Image)(resources.GetObject("SaveButton.Image")));
+            this.SaveButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.SaveButton.Name = "SaveButton";
+            this.SaveButton.Size = new System.Drawing.Size(60, 24);
+            this.SaveButton.Text = "Save";
+            this.SaveButton.Click += new System.EventHandler(this.SaveButton_Click);
+            // 
             // SVGViewer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -95,6 +106,7 @@
         private System.Windows.Forms.ToolStripButton open;
         private System.Windows.Forms.PictureBox imageBox;
         private System.Windows.Forms.OpenFileDialog openSvgFile;
+        private System.Windows.Forms.ToolStripButton SaveButton;
     }
 }
 

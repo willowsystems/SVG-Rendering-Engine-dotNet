@@ -21,7 +21,7 @@ namespace SVGViewer
             currentFile = null;
         }
 
-        private void openFile(string fileName)
+        private Bitmap renderFile(string fileName)
         {
             var displaySize = imageBox.Size;
             
@@ -55,15 +55,25 @@ namespace SVGViewer
             {
                 throw new Exception("Viewing area is too small to render the image");
             }
-            
+
+            // When proportions of drawing do not match viewing area, it's nice to center the drawing within the viewing area.
+            int centeringX = Convert.ToInt16((displaySize.Width - (padding + svgDoc.Width * scalingFactor)) / 2);
+            int centeringY = Convert.ToInt16((displaySize.Height - (padding + svgDoc.Height * scalingFactor)) / 2);
+
+            // Remove the "+ centering*" to avoid growing and padding the Bitmap with transparent fill.
             svgDoc.Transforms = new SvgTransformCollection();
+            svgDoc.Transforms.Add(new SvgTranslate(padding + centeringX, padding + centeringY));
             svgDoc.Transforms.Add(new SvgScale(scalingFactor));
-            svgDoc.Transforms.Add(new SvgTranslate(padding, padding));
 
-            //svgDoc.Width = new SvgUnit(svgDoc.Width.Type, svgDoc.Width * factor);
-            //svgDoc.Height = new SvgUnit(svgDoc.Height.Type, svgDoc.Height * factor);
+            //// This scales the bitmap with the content
+            //svgDoc.Width = new SvgUnit(svgDoc.Width.Type, padding + svgDoc.Width * scalingFactor);
+            //svgDoc.Height = new SvgUnit(svgDoc.Height.Type, padding + svgDoc.Height * scalingFactor);
 
-            imageBox.Image = svgDoc.Draw();
+            // This keeps the size of bitmap fixed to stated viewing area. Image is padded with transparent areas.
+            svgDoc.Width = new SvgUnit(svgDoc.Width.Type, displaySize.Width);
+            svgDoc.Height = new SvgUnit(svgDoc.Height.Type, displaySize.Height);
+
+            return svgDoc.Draw();
         }
 
 
@@ -72,7 +82,7 @@ namespace SVGViewer
             if (openSvgFile.ShowDialog() == DialogResult.OK)
             {
                 currentFile = openSvgFile.FileName;
-                openFile(currentFile);
+                imageBox.Image = renderFile(currentFile);
             }
         }
 
@@ -80,7 +90,20 @@ namespace SVGViewer
         {
             if (currentFile != null)
             {
-                openFile(currentFile);
+                imageBox.Image = renderFile(currentFile);
+            }
+        }
+
+        private void SaveButton_Click(object sender, EventArgs e)
+        {
+            if (currentFile != null)
+            {
+                var b = renderFile(currentFile);
+
+                b.Save(
+                    currentFile + DateTime.Now.Ticks.ToString() + ".png"
+                    , System.Drawing.Imaging.ImageFormat.Png
+                );
             }
         }
     }
